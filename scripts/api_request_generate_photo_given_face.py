@@ -1,6 +1,9 @@
 import requests
 import base64
 from copy import deepcopy
+import os
+from datetime import datetime
+
 
 payload_template = {
     "alwayson_scripts": {
@@ -20,7 +23,7 @@ payload_template = {
                     "is_ui": True,
                     "loopback": False,
                     "low_vram": False,
-                    "model": "ip-adapter-plus-face_sdxl_vit-h [c60d7d48]",
+                    "model": "ip-adapter-plus-face_sdxl_vit-h",
                     "module": "ip-adapter-auto",
                     "output_dir": "",
                     "pixel_perfect": True,
@@ -80,8 +83,8 @@ payload_template = {
     "width": 1024,
 }
 
-
-with open("images/faces/1.png", "rb") as f:
+FACE = 1
+with open(f"images/faces/{FACE}.png", "rb") as f:
     ref_img = f.read()
 
 payload = deepcopy(payload_template)
@@ -92,5 +95,7 @@ payload["alwayson_scripts"]["ControlNet"]["args"][0]["image"]["image"] = (
 r = requests.post("http://127.0.0.1:7860/sdapi/v1/txt2img", json=payload)
 r.raise_for_status()
 
-with open("output.png", "wb") as f:
+os.makedirs(f"images/{FACE}", exist_ok=True)
+img_name = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+with open(f"images/{FACE}/{img_name}.png", "wb") as f:
     f.write(base64.b64decode(r.json()["images"][0]))
