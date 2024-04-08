@@ -1,0 +1,4 @@
+services:
+   auto:
+     environment:
+       - CLI_ARGS=--allow-code --medvram --xformers --enable-insecure-extension-access --api --ckpt models/Stable-diffusion/sd_xl_base_1.0.safetensors --no-download-sd-model
